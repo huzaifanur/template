@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
 
-First, run the development server:
+## Scenarios
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### 1 - Access window object in a client component without useEffect
+
+``` js
+"use client";
+function AccessWindowNoEffect() {
+  const url = window.location.href;
+  return (
+    <div>
+      <h1>With NoEffect {url}</h1>
+    </div>
+  );
+}
+export default AccessWindowNoEffect;
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This will render the url  in the h1 but will also give an error that `window object is not defined`
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+This happens because, on the first reload next render both client and server on the server for optimization pupouse, so it gives us an error on server but at the same time works just fine on the client (in dev), but still need to get rid of it.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**Its important to note that the window object is available at the very start on the request on the other hand document object becomes available only after the dom has been created.** 
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2 - Access window object in a client component with useEffect
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+``` js
+"use client";
+export default function Home() {
+  const url = window.location.href;
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <h1>{url}</h1>
+      <h2>{text}</h2>
+      
+    </main>
+  );
+}
+```
